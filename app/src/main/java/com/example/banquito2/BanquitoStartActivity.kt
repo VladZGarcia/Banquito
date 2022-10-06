@@ -53,7 +53,7 @@ class BanquitoStartActivity : AppCompatActivity() {
         firstRound = intent.getBooleanExtra("firstRound", true)
         infoTextView = findViewById(R.id.infoTextView)
 
-        player1 = Players("$name ", 50, false)
+        player1 = Players("$name ", 20, false)
         var resultText =""
         infoTextView.setEnabled(false)
         if (firstRound) {
@@ -345,13 +345,13 @@ class BanquitoStartActivity : AppCompatActivity() {
                     infoTextView.text = "${player1.name} betar ${player1.banquitoBet} Banquitos"
                     for (player in playerList.players) {
                         if (!player.bank) {
+                            var playerbet = (1..10).random()
                             if(player.money >= 10 ){
-                                var playerbet = (1..10).random()
                                 player.banquitoBet = playerbet
                                 resultText =
                                     "${infoTextView.text}\n${player.name} betar ${player.banquitoBet} Banquitos"
                                 infoTextView.text = resultText
-                            } else {
+                            } else if(playerbet > player.money){
                                 player.banquitoBet = player.money
                                 resultText =
                                     "${infoTextView.text}\n${player.name} betar ${player.banquitoBet} Banquitos"
@@ -382,19 +382,22 @@ class BanquitoStartActivity : AppCompatActivity() {
             betView.setText(null)
             infoTextView.text = "Du är Banken!\n"
             for (player in playerList.players) {
-
                 var playerbet = (1..10).random()
-                player.banquitoBet = playerbet
-
-                resultText =
-                    "${infoTextView.text}\n${player.name} betar ${player.banquitoBet} Banquitos"
-                infoTextView.text = resultText
+                if(player.money >= 10 ){
+                    player.banquitoBet = playerbet
+                    resultText =
+                        "${infoTextView.text}\n${player.name} betar ${player.banquitoBet} Banquitos"
+                    infoTextView.text = resultText
+                } else if(playerbet > player.money){
+                    player.banquitoBet = player.money
+                    resultText =
+                        "${infoTextView.text}\n${player.name} betar ${player.banquitoBet} Banquitos"
+                    infoTextView.text = resultText
+                }
             }
             infoTextView.text = "${infoTextView.text}\n\nTryck på skärmen för att Starta!"
-
+            infoTextView.setEnabled(true)
         }
-
-
     }
     fun player1NameDesignation (pileNrName : Int?) {
         if (pileNrName == 0){
@@ -539,23 +542,30 @@ class BanquitoStartActivity : AppCompatActivity() {
         }
 
 
-                //Ess controll
+                //Ess controll, kolla att bara en spelare fått Ess!
                 for (player in playerList.players) {
                     if (player1.cardValue == 14 && player.cardValue != 14) {
-                        player.bank = false
-                        player1.bank = true
-                    }
+                       // if(player1.bank) {
+                            player.bank = false
+                            player1.bank = true
+                        //}else {
+                            //player1.bank = false
+                        //}
 
+
+                    }
 
                     if (player.cardValue == 14 && player1.cardValue != 14) {
 
                         for (player2 in playerList.players) {
                             if (player.name != player2.name) {
-                                if (player2.cardValue != 14) {
+                                if (player.cardValue == 14 && player2.cardValue != 14) {
                                     player1.bank = false
                                     player.bank = true
                                     player2.bank = false
 
+                                }else {
+                                    player.bank = false
                                 }
                             }
                         }
@@ -567,7 +577,7 @@ class BanquitoStartActivity : AppCompatActivity() {
 
                     }
 
-                }
+                } // Ess controll funkar inte som det ska.
                 if (player1.bank && player1.cardValue == 14) {
                     resultText =
                         "\n${player1.name} var ensam om att få Ess och är Banken."

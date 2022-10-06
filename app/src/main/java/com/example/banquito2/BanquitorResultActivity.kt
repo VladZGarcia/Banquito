@@ -35,26 +35,17 @@ class BanquitorResultActivity : AppCompatActivity() {
         for (player in playerList.players) {
             resultText ="\n${infoTextView.text}\n${player.name} har ${player.money} banquitos kvar.\n"
             infoTextView.text = resultText
-            if(player.money == 0){
-
-
+            if(player.money <= 0  ){
+                resultText ="\n${player.name} har ${player.money} banquitos och är ute ur spelet.\n"
+                infoTextView.text = resultText
+                playerList.players.remove(player)
             }
 
         }
 
 
         button.setOnClickListener {
-            for (player in playerList.players) {
 
-                if(player.money <= 0  ){
-                    resultText ="\n${player.name} har ${player.money} banquitos och är ute ur spelet.\n"
-                    infoTextView.text = resultText
-                    playerList.players.remove(player)
-
-
-                }
-
-            }
             val intent = Intent(this, BanquitoStartActivity::class.java)
 
             intent.putExtra("nameText", player1.name)

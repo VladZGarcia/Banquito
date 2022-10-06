@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity() {
 
                 val intent = Intent( this, BanquitoGameActivity::class.java)
                 startActivity(intent)
+                finish()
             }
         }
     }
