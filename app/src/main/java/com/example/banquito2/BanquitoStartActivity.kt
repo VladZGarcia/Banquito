@@ -23,7 +23,6 @@ class BanquitoStartActivity : AppCompatActivity() {
     val playerList = PlayerList()
     val cardPiles = CardList()
     var player1 = Players("",100,false,  0)
-
     var valdPile = 0
     var name : String? = "player1"
     var firstRound = true
@@ -56,11 +55,11 @@ class BanquitoStartActivity : AppCompatActivity() {
 
         player1 = Players("$name ", 50, false)
         var resultText =""
-
+        infoTextView.setEnabled(false)
         if (firstRound) {
-            infoTextView.setEnabled(false)
+
              resultText = "\n\nHögsta kortet blir BANKEN!"
-            infoTextView.text = "$resultText\n \n$name Välj korthög!"
+            infoTextView.text = "$resultText\n \n$name välj korthög!"
 
             val button1Card = deck.newRndCard()
             button1Card.pile = 1
@@ -160,21 +159,25 @@ class BanquitoStartActivity : AppCompatActivity() {
             }
 
         }
+
         if(!firstRound) {
 
             resultText = "Ny omgång!\n\nTryck på skärmen!"
             infoTextView.text = resultText
-            // Tar emot intent!!
+
+            // Tar emot intent från ResultActivity!!
             player1.name = intent.getStringExtra("nameText")
             player1.money = intent.getIntExtra("moneyP1", 0)
             player1.bank = intent.getBooleanExtra("${player1.name} bank", false)
-            for(player in playerList.players){
+            for (player in playerList.players) {
                 player.name = intent.getStringExtra("${player.name}")
                 player.money = intent.getIntExtra("${player.name} money", 0)
                 player.bank = intent.getBooleanExtra("${player.name} bank", false)
             }
+            infoTextView.setEnabled(true)
         }
-        infoTextView.setEnabled(true)
+
+
         infoTextView.setOnClickListener {
             if(player1.money==0) {
                 finish()
@@ -198,7 +201,7 @@ class BanquitoStartActivity : AppCompatActivity() {
 
             bet()
 
-            infoTextView.setEnabled(true)
+
             infoTextView.setOnClickListener {
                 cardButton1.setEnabled(true)
                 cardButton2.setEnabled(true)
@@ -218,7 +221,7 @@ class BanquitoStartActivity : AppCompatActivity() {
                         "\n\nDu är BANKEN! \n\n$name vilken väljer du? "
                 }
             }
-            if (!firstRound) {
+
 
                 deck.createDeck()
                 var button1Card = deck.newRndCard()
@@ -314,7 +317,7 @@ class BanquitoStartActivity : AppCompatActivity() {
                 }
             }
 
-        }
+
     }
 
     fun bet() {
@@ -365,7 +368,7 @@ class BanquitoStartActivity : AppCompatActivity() {
                 infoTextView.text =
                     "${infoTextView.text}\n\nTryck på skärmen för att Starta!\n"
 
-
+                infoTextView.setEnabled(true)
                 betView.setEnabled(false)
                 betView.setHint("")
                 betView.text = null
@@ -393,10 +396,6 @@ class BanquitoStartActivity : AppCompatActivity() {
 
 
     }
-
-
-
-
     fun player1NameDesignation (pileNrName : Int?) {
         if (pileNrName == 0){
             pile1View.text = "${player1.name}"
@@ -413,7 +412,7 @@ class BanquitoStartActivity : AppCompatActivity() {
             pile5View.text = "${player1.name}"
         }
     }
-    fun playerListNameDesignation (pileNrName : Int?, playerName : String?) {
+    fun playerPileNameDesignation (pileNrName : Int?, playerName : String?) {
         if (pileNrName == 1){
             pile1View.text = "${playerName}"
         }else if (pileNrName == 2){
@@ -435,19 +434,14 @@ class BanquitoStartActivity : AppCompatActivity() {
         var firstChoice = cardPiles.piles[valdPile]
         cardPiles.piles.removeAt(valdPile)
         player1NameDesignation(valdPile)
-        Log.d("!!!","$valdPile")
         player1.cardValue = firstChoice.value
         var highestVal = player1
         valdPile += 1
-        //infoTextView.text = "$name du valde korthög $valdPile"
 
             for (player in playerList.players) {
                 var rndPlayer = playerList.RndPlayer()
                 var newPile = cardPiles.removePile()
-                playerListNameDesignation(newPile.pile,rndPlayer.name)
-                Log.d("!!!","${newPile.pile} ${rndPlayer.name}")
-               //resultText =  "${infoTextView.text}\n${rndPlayer.name} väljer korthög ${newPile.pile}"
-               //infoTextView.text = resultText
+                playerPileNameDesignation(newPile.pile,rndPlayer.name)
                 rndPlayer.cardValue = newPile.value
 
                 if(highestVal.cardValue < rndPlayer.cardValue) {
@@ -457,7 +451,7 @@ class BanquitoStartActivity : AppCompatActivity() {
         highestVal.bank = true
         resultText =  "\n\n${highestVal.name} är Banken\n\nTryck på skärmen!"
         infoTextView.text = resultText
-
+        infoTextView.setEnabled(true)
     }
 
     fun bankGame() {
@@ -473,7 +467,7 @@ class BanquitoStartActivity : AppCompatActivity() {
         for (player in playerList.players) {
             var rndPlayer = playerList.RndPlayer()
             var newPile = cardPiles.removePile()
-            playerListNameDesignation(newPile.pile,rndPlayer.name)
+            playerPileNameDesignation(newPile.pile,rndPlayer.name)
             //resultText = "${infoTextView.text}\n${rndPlayer.name} väljer korthög ${newPile.pile}"
             //infoTextView.text = resultText
             rndPlayer.cardValue = newPile.value
